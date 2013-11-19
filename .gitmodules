@@ -1,0 +1,3 @@
+[submodule "PyMaxflow"]
+	path = PyMaxflow
+	url = git@github.com:letterx/PyMaxflow.git
