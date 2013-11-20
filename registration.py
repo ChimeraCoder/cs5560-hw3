@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import cv2
 
 # translates im2 by (x, y) and overlays the result over im1
