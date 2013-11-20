@@ -19,7 +19,22 @@ def overlay(im1, im2, x, y):
         + 0.5*im2[lbx:ubx,lby:uby]
     return result
 
-if __name__ == '__main__':
+def jointEntropy(im1, im2):
+
+    for i in xrange(-20,20):
+        for j in xrange(-20,20):
+
+            #Generate the histogram for the entire overlapping region
+            for x in xrange(im1.shape[0]):
+                for y in xrange(im1.shape[1]):
+                    r, g, b = im1[i,j]
+            
+
+
+
+
+
+def main():
 # read image pair, as grayscale (argument 0 to imread)
     im1 = cv2.imread('reg-1-1.jpg', 0)
     im2 = cv2.imread('reg-1-2.jpg', 0)
@@ -39,3 +54,6 @@ if __name__ == '__main__':
     cv2.imshow('imshow', out)
     cv2.waitKey(0)
     cv2.imwrite('reg-1.jpg', out)
+
+if __name__ == '__main__':
+    main()
