@@ -47,20 +47,37 @@ def histCompare(hist1, hist2):
 
 
 def overlappingComponents(img1, img2, i, j):
-    yield img1[i:, j:], img2[:-i, : -j]
-    yield img1[i:, :-j], img2[:-i, j: ]
-    yield img1[:-i, j:], img2[i:, :-j]
-    yield img1[:-i, :-j], img2[i:, j: ]
+
+    if i is 0 and j is 0 :
+        yield img1, img2
+    elif i is 0:
+        yield img1[i:, j:], img2[:, : -j]
+        yield img1[i:, :-j], img2[:, j: ]
+        yield img1[:, j:], img2[i:, :-j]
+        yield img1[:, :-j], img2[i:, j: ]
+    elif j is 0:
+        yield img1[i:, j:], img2[:-i, : ]
+        yield img1[i:, :], img2[:-i, j: ]
+        yield img1[:-i, j:], img2[i:, :]
+        yield img1[:-i, :], img2[i:, j: ]
+    else:
+        yield img1[i:, j:], img2[:-i, : -j]
+        yield img1[i:, :-j], img2[:-i, j: ]
+        yield img1[:-i, j:], img2[i:, :-j]
+        yield img1[:-i, :-j], img2[i:, j: ]
 
 
-def jointEntropy(im1, im2):
+
+def jointEntropy(im1, im2, offset=None):
+    if offset is None:
+        offset=20
 
     # Hold im1 in place and slide im2
 
     scores = {}
-    for i in xrange(20):
+    for i in xrange(offset):
         print("i is %d" % i)
-        for j in xrange(20):
+        for j in xrange(offset):
             print("j is %d" % j)
             #Iterate over the four possible ways to overlap with this offset and yield the cropped images
             for img1, img2 in overlappingComponents(im1, im2, i, j):
