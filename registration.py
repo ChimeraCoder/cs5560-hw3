@@ -25,7 +25,11 @@ def histogram(image):
     hist = defaultdict(int)
     for x in xrange(image.shape[0]):
         for y in xrange(image.shape[1]):
-            r, g, b = image[x,y]
+            try: r, g, b = image[x,y]
+            except:
+                print(type(image))
+                print(image.dtype)
+                raise
             hist[(r,g,b)]+=1
     return hist
 
@@ -42,29 +46,47 @@ def histCompare(hist1, hist2):
     return error
 
 
+def overlappingComponents(img1, img2, i, j):
+    yield img1[i:, j:], img2[:-i,-j]
+    yield img1[i:, :-j], img2[:-i, j:]
+    yield img1[:-i, j:], img2[i:, :-j]
+    yield img1[:-i, :-j], img2[i:, j:]
+
 
 def jointEntropy(im1, im2):
 
     # Hold im1 in place and slide im2
 
     scores = {}
-    for i in xrange(-20,20):
-        for j in xrange(-20,20):
-
-            #Identify the overlapping region
-
-            img1 = im1[i:,j:]
-            img2 = im2[:-i,:-j]
-
-            #Generate the histogram for the entire overlapping region
-            img1hist = histogram(img1)
-            img2hist = histogram(img2)
-
-           
-            score = histCompare(img1hist, img2hist)
-            scores[(i,j)] = score
-
+    for i in xrange(20):
         print("i is %d" % i)
+        for j in xrange(20):
+            print("j is %d" % j)
+            #Iterate over the four possible ways to overlap with this offset and yield the cropped images
+            for img1, img2 in overlappingComponents(im1, im2, i, j):
+                #Check to make sure that neither cropped image has zero length or zero width
+                #If so, skip this combination
+                skip = False
+                for cropped in (img1, img2):
+                    if len(cropped.shape) is not 3:
+                        raise Exception("Shape should have three components: " + str(cropped.shape))
+                    if cropped.shape[0] == 0 or cropped.shape[1] == 0:
+                        print("Skipping with dimensions %s " % str(cropped.shape))
+                        skip = True
+                    elif cropped.shape[2] is not 3:
+                        raise Exception("Shape should be 3, not %s" % cropped.shape)
+                if skip:
+                    continue
+                else:
+                    print("NOT skipping")
+                #Generate the histogram for the entire overlapping region
+                img1hist = histogram(img1)
+                img2hist = histogram(img2)
+
+               
+                score = histCompare(img1hist, img2hist)
+                scores[(i,j)] = score
+
     return scores
 
 
