@@ -47,10 +47,10 @@ def histCompare(hist1, hist2):
 
 
 def overlappingComponents(img1, img2, i, j):
-    yield img1[i:, j:], img2[:-i,-j]
-    yield img1[i:, :-j], img2[:-i, j:]
+    yield img1[i:, j:], img2[:-i, : -j]
+    yield img1[i:, :-j], img2[:-i, j: ]
     yield img1[:-i, j:], img2[i:, :-j]
-    yield img1[:-i, :-j], img2[i:, j:]
+    yield img1[:-i, :-j], img2[i:, j: ]
 
 
 def jointEntropy(im1, im2):
@@ -74,7 +74,7 @@ def jointEntropy(im1, im2):
                         print("Skipping with dimensions %s " % str(cropped.shape))
                         skip = True
                     elif cropped.shape[2] is not 3:
-                        raise Exception("Shape should be 3, not %s" % cropped.shape)
+                        raise Exception("Should have 3 (RGB) values, not %s" % cropped.shape)
                 if skip:
                     continue
                 else:
