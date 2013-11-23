@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 from __future__ import division, print_function
 from collections import defaultdict
+from itertools import izip
 import cv2
 
 # translates im2 by (x, y) and overlays the result over im1
@@ -67,6 +68,16 @@ def overlappingComponents(img1, img2, i, j):
         yield img1[:-i, :-j], img2[i:, j: ]
 
 
+def compareImageColors(im1, im2):
+    
+    hist = defaultdict(int)
+    for row1, row2 in izip(im1, im2):
+        for val1, val2 in izip(row1, row2):
+            r1, g1, b1 = val1
+            r2, g2, b2 = val2
+            hist[((r1, g1, b1), (r2, g2, b2))] += 1
+
+    return hist
 
 def jointEntropy(im1, im2, offset=None):
     if offset is None:
