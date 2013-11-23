@@ -93,6 +93,7 @@ def jointEntropy(im1, im2, offset=None):
             print("j is %d" % j)
             #Iterate over the four possible ways to overlap with this offset and yield the cropped images
             for img1, img2 in overlappingComponents(im1, im2, i, j):
+                print(img1.flags["OWNDATA"])
                 #Check to make sure that neither cropped image has zero length or zero width
                 #If so, skip this combination
                 skip = False
@@ -108,12 +109,8 @@ def jointEntropy(im1, im2, offset=None):
                     continue
                 else:
                     print("NOT skipping")
-                #Generate the histogram for the entire overlapping region
-                img1hist = histogram(img1)
-                img2hist = histogram(img2)
-
                
-                score = histCompare(img1hist, img2hist)
+                score = compareImageColors(img1, img2)
                 scores[(i,j)] = score
 
     return scores
