@@ -1,5 +1,6 @@
 #! /usr/bin/env python
-
+from __future__ import division, print_function
+from collections import defaultdict
 import cv2
 
 # translates im2 by (x, y) and overlays the result over im1
@@ -19,18 +20,52 @@ def overlay(im1, im2, x, y):
         + 0.5*im2[lbx:ubx,lby:uby]
     return result
 
+
+def histogram(image):
+    hist = defaultdict(int)
+    for x in xrange(image.shape[0]):
+        for y in xrange(image.shape[1]):
+            r, g, b = image[x,y]
+            hist[(r,g,b)]+=1
+    return hist
+
+
+
+def histCompare(hist1, hist2):
+    h1keys = set(hist1.keys())
+    h2keys = set(hist2.keys())
+
+    error = 0
+    #histograms are default dicts, so accessing non-existant values gives 0
+    for key in h1keys.union(h2keys):
+        error += abs(hist1[key] - hist2[key])
+    return error
+
+
+
 def jointEntropy(im1, im2):
 
+    # Hold im1 in place and slide im2
+
+    scores = {}
     for i in xrange(-20,20):
         for j in xrange(-20,20):
 
+            #Identify the overlapping region
+
+            img1 = im1[i:,j:]
+            img2 = im2[:-i,:-j]
+
             #Generate the histogram for the entire overlapping region
-            for x in xrange(im1.shape[0]):
-                for y in xrange(im1.shape[1]):
-                    r, g, b = im1[i,j]
-            
+            img1hist = histogram(img1)
+            img2hist = histogram(img2)
 
+           
+            score = histCompare(img1hist, img2hist)
+            scores[(i,j)] = score
 
+        print("i is %d" % i)
+    return scores
 
 
 
