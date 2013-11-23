@@ -2,6 +2,7 @@
 from __future__ import division, print_function
 from collections import defaultdict
 from itertools import izip
+import numpy as np
 import cv2
 
 # translates im2 by (x, y) and overlays the result over im1
@@ -77,7 +78,7 @@ def compareImageColors(im1, im2):
             r2, g2, b2 = val2
             hist[((r1, g1, b1), (r2, g2, b2))] += 1
 
-    return hist
+    return reduce(lambda x, y: x+y, map(lambda key: hist[key] * np.log(hist[key]), hist.keys()), 0)
 
 def jointEntropy(im1, im2, offset=None):
     if offset is None:
