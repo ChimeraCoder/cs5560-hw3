@@ -1,0 +1,8 @@
+The unary terms represent the costs of assigning a single pixel to be either "1" or "0". The costs of assigning a pixel to each value must add up to 1, by construction. (If the costs are not normalized, then one cost will "dominate" by being too low, and the resulting image will be an image with either all black or all white pixels).
+
+Looking at the images, in all images except the last, the artery is one of the brightests parts, if not the brightest. The last image contains a large bright section that is clearly not the artery (though the artery itself is also bright).
+
+Therefore, we determined the unary costs by ranking the brightness values across each image, and identifying whether a given pixel passed a certain threshold (percentile) in these rankings. We added these costs for all images except the last (the last one was ommitted because inspection proved that the brightest portion was not the desired feature). 
+
+
+Of course, this meant that we had to determine the optimal percentile value. This was surprisingly straightforward, as values that were too low resulted in single-color images (all black or all white), and it was easy to use binary search to identify an image that had some pixels of each color. This resulting image was capable of segmenting the artery reasonably well.
